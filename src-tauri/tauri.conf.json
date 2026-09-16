@@ -13,9 +13,9 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "app-finance-analyser",
-        "width": 800,
-        "height": 600
+        "title": "B3 Finance Analyser",
+        "width": 1200,
+        "height": 700
       }
     ],
     "security": {

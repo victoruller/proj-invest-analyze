@@ -1,43 +1,186 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="/src/styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tauri App</title>
+    <title>B3 Finance Analyser</title>
     <script type="module" src="/src/main.ts" defer></script>
   </head>
 
   <body>
-    <main class="container">
-      <h1>Welcome to Tauri</h1>
 
-      <div class="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/src/assets/vite.svg" class="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img
-            src="/src/assets/tauri.svg"
-            class="logo tauri"
-            alt="Tauri logo"
-          />
-        </a>
-        <a href="https://www.typescriptlang.org/docs" target="_blank">
-          <img
-            src="/src/assets/typescript.svg"
-            class="logo typescript"
-            alt="typescript logo"
-          />
-        </a>
+    <!-- ── Tela de entrada ──────────────────────────────────────────────────── -->
+    <div id="splash">
+      <div class="splash-card">
+        <span class="splash-crab">🦀</span>
+        <h1 class="splash-title">B3 Finance Analyser</h1>
+        <div class="splash-chat">
+          <div class="splash-msg splash-msg-left">
+            <span class="splash-avatar">🦀</span>
+            <div class="splash-bubble">PETR4 tá barato<br>ou é furada?</div>
+          </div>
+          <div class="splash-msg splash-msg-right">
+            <div class="splash-bubble">Calculando P/VP Justo,<br>ROE, DY… 📊</div>
+            <span class="splash-avatar">🤖</span>
+          </div>
+          <div class="splash-msg splash-msg-left">
+            <span class="splash-avatar">🦀</span>
+            <div class="splash-bubble">Eu cuido das garras.<br>Você cuida do capital.</div>
+          </div>
+        </div>
+        <div class="splash-progress">
+          <div id="splash-fill" class="splash-fill"></div>
+        </div>
+        <p class="splash-tagline">Seu portfólio nas garras certas.</p>
+        <p class="splash-credits">Powered by Rust 🦀 &amp; Claude Code 🤖</p>
       </div>
-      <p>Click on the Tauri logo to learn more about the framework</p>
+    </div>
 
-      <form class="row" id="greet-form">
-        <input id="greet-input" placeholder="Enter a name..." />
-        <button type="submit">Greet</button>
-      </form>
-      <p id="greet-msg"></p>
+    <header class="app-header">
+      <span class="app-title">B3 Finance Analyser</span>
+      <nav class="tab-bar">
+        <button class="tab-btn active" data-tab="analise">Análise</button>
+        <button class="tab-btn" data-tab="ativos">Ativos</button>
+        <button class="tab-btn" data-tab="configuracoes">Configurações</button>
+      </nav>
+    </header>
+
+    <main>
+
+      <!-- ── Tab: Análise ─────────────────────────────────────────────────── -->
+      <section id="tab-analise" class="tab-content active">
+        <div class="toolbar">
+          <div id="column-toggles"></div>
+          <span id="status-msg" class="status-msg"></span>
+        </div>
+        <div class="table-wrapper">
+          <table id="analysis-table">
+            <thead>
+              <tr>
+                <th data-col="ticker">Ticker</th>
+                <th data-col="nome">Nome</th>
+                <th data-col="preco">Preço</th>
+                <th data-col="liquidez">Liquidez Diária</th>
+                <th data-col="pvp_atual">P/VP Atual</th>
+                <th data-col="pvp_medio_1a">P/VP Méd. 1a</th>
+                <th data-col="pvp_medio_5a">P/VP Méd. 5a</th>
+                <th data-col="pvp_justo">P/VP Justo</th>
+                <th data-col="pvp_justo_5a">P/VP Justo 5a</th>
+                <th data-col="roe_atual">ROE Atual</th>
+                <th data-col="roe_medio_5a">ROE Méd. 5a</th>
+                <th data-col="dy_atual">DY Atual</th>
+                <th data-col="dy_medio_5a">DY Méd. 5a</th>
+                <th data-col="g_usado">Taxa g (a.a.)</th>
+                <th data-col="vp_por_acao">VP/Ação</th>
+                <th data-col="net_income_ttm">Lucro Líq. TTM</th>
+                <th data-col="dividends_ttm">Div. TTM</th>
+                <th data-col="receita_ttm">Receita TTM</th>
+                <th data-col="margem_liquida">Margem Líq.</th>
+                <th data-col="margem_operacional">Margem Op.</th>
+                <th data-col="roic">ROIC (a.a.)</th>
+                <th data-col="net_debt">Dívida Líquida</th>
+                <th data-col="divida_liquida_pl">D.Líq./P.L.</th>
+                <th data-col="divida_liquida_ebit">D.Líq./EBIT</th>
+                <th data-col="pl">P/L</th>
+                <th data-col="ev_ebit">EV/EBIT</th>
+                <th data-col="flags">Flags</th>
+                <th data-col="situacao_atual">Situação Atual</th>
+                <th data-col="situacao_5a">Situação 5a</th>
+                <th data-col="atualizado">Atualizado em</th>
+              </tr>
+            </thead>
+            <tbody id="analysis-tbody"></tbody>
+          </table>
+        </div>
+        <p id="empty-msg" class="empty-msg" style="display:none">
+          Nenhum ativo cadastrado. Vá para a aba <strong>Ativos</strong> para adicionar.
+        </p>
+      </section>
+
+      <!-- ── Tab: Ativos ──────────────────────────────────────────────────── -->
+      <section id="tab-ativos" class="tab-content">
+        <div class="add-ticker-form">
+          <input
+            id="ticker-input"
+            type="text"
+            placeholder="Ex: VALE3, PETR4..."
+            maxlength="10"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button id="btn-add-ticker">Adicionar</button>
+          <span id="add-status" class="add-status"></span>
+        </div>
+        <div id="watchlist-container" class="watchlist-container"></div>
+      </section>
+
+      <!-- ── Tab: Configurações ───────────────────────────────────────────── -->
+      <section id="tab-configuracoes" class="tab-content">
+        <form id="settings-form" class="settings-form">
+          <div class="setting-group">
+            <label for="cfg-r">Taxa de retorno desejada (r) — usada no P/VP Justo</label>
+            <div class="setting-input-row">
+              <input type="number" id="cfg-r" step="0.1" min="0" max="100" />
+              <span class="unit">% a.a.</span>
+            </div>
+            <small>Retorno mínimo <strong>anual</strong> que você exige de um investimento. Ex: 12% a.a.</small>
+          </div>
+
+          <div class="setting-group">
+            <label for="cfg-g">Taxa de crescimento de fallback (g)</label>
+            <div class="setting-input-row">
+              <input type="number" id="cfg-g" step="0.1" min="0" max="100" />
+              <span class="unit">% a.a.</span>
+            </div>
+            <small>Taxa de crescimento <strong>anual</strong> usada quando o CAGR histórico não pode ser calculado (dados insuficientes ou lucro negativo).</small>
+          </div>
+
+          <div class="setting-group">
+            <label for="cfg-gmax">Crescimento máximo (teto do g)</label>
+            <div class="setting-input-row">
+              <input type="number" id="cfg-gmax" step="0.1" min="0" max="100" />
+              <span class="unit">% a.a.</span>
+            </div>
+            <small>Limite <strong>anual</strong> para o g vindo do CAGR. No modelo de Gordon o g é crescimento <strong>perpétuo</strong>: um CAGR alto de poucos anos (ou próximo de r) infla o P/VP Justo.</small>
+          </div>
+
+          <div class="setting-group">
+            <label for="cfg-dymin">Dividend Yield mínimo para COMPRA</label>
+            <div class="setting-input-row">
+              <input type="number" id="cfg-dymin" step="0.5" min="0" max="100" />
+              <span class="unit">% a.a.</span>
+            </div>
+            <small>Deixe em <strong>0</strong> para não filtrar por dividendo: o P/VP Justo já embute o dividendo (payout implícito = 1 − g/ROE), então exigir DY em cima disso conta o dividendo duas vezes. Aumente só se quiser uma carteira focada em renda.</small>
+          </div>
+
+          <div class="setting-group">
+            <label for="cfg-liq">Liquidez diária mínima</label>
+            <div class="setting-input-row">
+              <span class="unit prefix">R$</span>
+              <input type="number" id="cfg-liq" step="10000" min="0" />
+              <span class="unit">/ dia</span>
+            </div>
+            <small>Volume financeiro médio <strong>diário</strong> (Close × Volume). Ativos abaixo desse valor são sinalizados como baixa liquidez.</small>
+          </div>
+
+          <div class="setting-group">
+            <label for="cfg-selic">Taxa Selic atual (referência)</label>
+            <div class="setting-input-row">
+              <input type="number" id="cfg-selic" step="0.01" min="0" max="100" />
+              <span class="unit">% a.a.</span>
+            </div>
+            <small>Taxa básica de juros <strong>anual</strong>. Exibida como referência para comparação com o DY. Não altera os cálculos de valuation.</small>
+          </div>
+
+          <button type="submit" class="btn-save">Salvar Configurações</button>
+          <span id="settings-status" class="settings-status"></span>
+        </form>
+      </section>
+
     </main>
+
+    <!-- Tooltip flutuante (gerenciado via JS) -->
+    <div id="tooltip-box" class="tooltip-box" style="display:none"></div>
   </body>
 </html>

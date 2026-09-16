@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Banco de dados local (cache de cotações, fundamentals e métricas)
+finance_data.db
+finance_data.db-shm
+finance_data.db-wal
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
