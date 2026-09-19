@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    app_finance_analyser_lib::run()
+    invest_analyze_lib::run()
 }

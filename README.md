@@ -1,4 +1,4 @@
-# B3 Finance Analyser
+# invest-analyze
 
 Aplicativo desktop (Tauri + Rust + TypeScript) para análise fundamentalista de ações da
 B3, focado em decidir se um ativo está em momento de **compra**, **manter** ou **venda**

@@ -1000,7 +1000,7 @@ impl DataCache {
 // ─── Caminho do banco ─────────────────────────────────────────────────────────
 
 fn db_path() -> PathBuf {
-    // CARGO_MANIFEST_DIR = c:\Codigos\app-finance-analyser\src-tauri (compile-time)
+    // CARGO_MANIFEST_DIR = <raiz do projeto>\src-tauri (compile-time)
     // O pai desse diretório é a raiz do projeto
     let manifest = env!("CARGO_MANIFEST_DIR");
     PathBuf::from(manifest)
